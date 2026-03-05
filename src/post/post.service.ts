@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { Post, Prisma } from '@prisma/client';
 import { PostStatus } from './constants/post-status.const';
@@ -89,12 +90,21 @@ export class PostService {
 
   async publish(id: string, userId: string): Promise<Post> {
     const post = await this.prisma.client.post.findUnique({ where: { id } });
-    if (!post) throw new NotFoundException('Post non trovato');
+
+    if (!post) {
+      throw new NotFoundException('Post non trovato');
+    }
+
     if (post.authorId !== userId) {
       throw new ForbiddenException(
         'Non puoi pubblicare un post di un altro utente',
       );
     }
+
+    if (post.status === 'published') {
+      throw new ConflictException('Il post è già stato pubblicato');
+    }
+
     return this.prisma.client.post.update({
       where: { id },
       data: { status: PostStatus.published },
