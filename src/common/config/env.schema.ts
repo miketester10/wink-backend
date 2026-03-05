@@ -10,11 +10,7 @@ const envSchema = z.object({
     .trim()
     .nonempty('JWT_EXPIRES_IN is required.')
     .transform(Number),
-  API_PREFIX: z
-    .string()
-    .trim()
-    .nonempty('API_PREFIX is required.')
-    .default('api/v1'),
+  API_PREFIX: z.string().trim().nonempty().default('api/v1'),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
