@@ -1,0 +1,12 @@
+services:
+  wink-backend:
+    build: .
+    container_name: wink-backend
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Rome
+    command: sh -c "npx prisma generate && npx prisma db push && node dist/main.js"
+    restart: unless-stopped
