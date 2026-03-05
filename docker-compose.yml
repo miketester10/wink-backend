@@ -8,5 +8,5 @@ services:
       - .env
     environment:
       - TZ=Europe/Rome
-    command: sh -c "npx prisma generate && npx prisma db push && node dist/main.js"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run build && node dist/main.js"
     restart: unless-stopped
