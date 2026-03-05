@@ -17,16 +17,10 @@ export class PostService {
 
   async findAllPublic(query: QueryPostsDto): Promise<PaginatedResponse<Post>> {
     const { page = 1, limit = 10, hashtags } = query;
-    const hashtagList = hashtags
-      ? hashtags
-          .split(',')
-          .map((h) => h.trim())
-          .filter(Boolean)
-      : undefined;
 
     const where: Prisma.PostWhereInput = {
       status: PostStatus.published,
-      ...(hashtagList?.length ? { hashtags: { hasSome: hashtagList } } : {}),
+      hashtags: hashtags ? { hasSome: hashtags } : undefined,
     };
 
     const [posts, meta] = await this.prisma.client.post
@@ -53,9 +47,12 @@ export class PostService {
     userId: string,
     query: QueryPostsDto,
   ): Promise<PaginatedResponse<Post>> {
-    const { page = 1, limit = 10 } = query;
+    const { page = 1, limit = 10, hashtags } = query;
 
-    const where = { authorId: userId };
+    const where: Prisma.PostWhereInput = {
+      authorId: userId,
+      hashtags: hashtags ? { hasSome: hashtags } : undefined,
+    };
 
     const [posts, meta] = await this.prisma.client.post
       .paginate({ where })
@@ -82,7 +79,7 @@ export class PostService {
       data: {
         title: dto.title,
         body: dto.body,
-        hashtags: dto.hashtags ?? [], // fare controllo con filter booelan per scartare hashtag vuoti
+        hashtags: dto.hashtags,
         authorId: userId,
       },
     });
