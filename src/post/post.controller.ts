@@ -56,6 +56,11 @@ export class PostController {
     summary:
       'Tutti i post dell’utente autenticato (draft + published), per gestirli/eliminarli',
   })
+  @ApiResponse({
+    status: 200,
+    description: "Lista paginata dei post dell'utente",
+  })
+  @ApiResponse({ status: 401, description: 'Non autorizzato' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   findMyPosts(@CurrentUser() user: JwtPayload, @Query() query: QueryPostsDto) {
@@ -69,6 +74,11 @@ export class PostController {
     summary:
       'Crea post (CMS) - protetto JWT, sempre draft, author Brian Fox, authorId da JWT',
   })
+  @ApiResponse({
+    status: 201,
+    description: 'Post creato con successo in stato draft',
+  })
+  @ApiResponse({ status: 401, description: 'Non autorizzato' })
   create(@Body() dto: CreatePostDto, @CurrentUser() user: JwtPayload) {
     return this.postsService.create(dto, user.sub);
   }
@@ -77,6 +87,14 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Pubblica un post (CMS) - protetto JWT' })
+  @ApiResponse({ status: 200, description: 'Post pubblicato con successo' })
+  @ApiResponse({ status: 401, description: 'Non autorizzato' })
+  @ApiResponse({
+    status: 403,
+    description: 'Non puoi pubblicare un post di un altro utente',
+  })
+  @ApiResponse({ status: 404, description: 'Post non trovato' })
+  @ApiResponse({ status: 409, description: 'Il post è già stato pubblicato' })
   publish(
     @Param('id', ParseObjectIdPipe) id: string,
     @CurrentUser() user: JwtPayload,
@@ -89,6 +107,13 @@ export class PostController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Elimina un post (CMS) - protetto JWT' })
+  @ApiResponse({ status: 204, description: 'Post eliminato con successo' })
+  @ApiResponse({ status: 401, description: 'Non autorizzato' })
+  @ApiResponse({
+    status: 403,
+    description: 'Non puoi eliminare un post di un altro utente',
+  })
+  @ApiResponse({ status: 404, description: 'Post non trovato' })
   remove(
     @Param('id', ParseObjectIdPipe) id: string,
     @CurrentUser() user: JwtPayload,
