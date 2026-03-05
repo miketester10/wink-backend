@@ -23,6 +23,7 @@ import { QueryPostsDto } from './dto/query-posts.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators';
 import type { JwtPayload } from '../auth/decorators';
+import { ParseObjectIdPipe } from 'src/common/pipes';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -77,7 +78,10 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Pubblica un post (CMS) - protetto JWT' })
-  publish(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+  publish(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
     return this.postsService.publish(id, user.sub);
   }
 
@@ -86,7 +90,10 @@ export class PostController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Elimina un post (CMS) - protetto JWT' })
-  remove(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+  remove(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
     return this.postsService.remove(id, user.sub);
   }
 }
