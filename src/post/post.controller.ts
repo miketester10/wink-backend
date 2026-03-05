@@ -56,13 +56,18 @@ export class PostController {
     summary:
       'Tutti i post dell’utente autenticato (draft + published), per gestirli/eliminarli',
   })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({
+    name: 'hashtags',
+    required: false,
+    description: 'hashtag singolo o comma-separated',
+  })
   @ApiResponse({
     status: 200,
     description: "Lista paginata dei post dell'utente",
   })
   @ApiResponse({ status: 401, description: 'Non autorizzato' })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
   findMyPosts(@CurrentUser() user: JwtPayload, @Query() query: QueryPostsDto) {
     return this.postsService.findMyPosts(user.sub, query);
   }
