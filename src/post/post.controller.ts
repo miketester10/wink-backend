@@ -54,7 +54,7 @@ export class PostController {
   @ApiBearerAuth()
   @ApiOperation({
     summary:
-      'Tutti i post dell’utente autenticato (draft + published), per gestirli/eliminarli',
+      'Lista post dell’utente autenticato (draft + published) - paginata, filtro hashtags',
   })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
