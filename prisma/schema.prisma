@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+/**
+ * Dalla versione 7 di PrismaORM, l'url va definito nel file prisma.config.ts.
+ * Ma attualmente la versione 7 non supporta ancora MongoDB, come citato dagli sviluppatori:
+ * If you are using MongoDB, please note that Prisma ORM v7 does not yet support MongoDB. You should continue using Prisma ORM v6 for now. Support for MongoDB is coming soon in v7.
+ */
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  draft
+  published
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+}
+
+model Post {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  body       String
+  hashtags   String[]
+  status     PostStatus @default(draft)
+  authorName String     @default("Brian Fox")
+  authorId   String     @db.ObjectId
+  author     User       @relation(fields: [authorId], references: [id])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([authorId])
+  @@index([status])
+  @@index([hashtags])
+}
