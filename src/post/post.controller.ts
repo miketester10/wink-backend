@@ -18,8 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PostService } from './post.service';
-import { CreatePostDto } from './dto/create-post.dto';
-import { QueryPostsDto } from './dto/query-posts.dto';
+import { CreatePostDto, QueryPostsDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators';
 import type { JwtPayload } from '../auth/decorators';

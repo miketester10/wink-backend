@@ -5,11 +5,10 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { Post, Prisma } from '@prisma/client';
-import { PostStatus } from './constants/post-status.const';
+import { PostStatus } from './constants';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginatedResponse } from '../common/interfaces';
-import { CreatePostDto } from './dto/create-post.dto';
-import { QueryPostsDto } from './dto/query-posts.dto';
+import { CreatePostDto, QueryPostsDto } from './dto';
 
 @Injectable()
 export class PostService {
