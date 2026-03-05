@@ -1,4 +1,4 @@
-# Wink Backend - Technical Test
+# WiNK Backend - Technical Test
 
 Questa è una REST API sviluppata con **NestJS** e **MongoDB** per un test tecnico. Il progetto implementa un sistema di gestione post (CMS) e una visualizzazione pubblica (Blog), con autenticazione JWT completa.
 
