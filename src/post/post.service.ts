@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { Post } from '@prisma/client';
+import { Post, Prisma } from '@prisma/client';
 import { PostStatus } from './constants/post-status.const';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginatedResponse } from '../common/interfaces';
@@ -23,7 +23,7 @@ export class PostService {
           .filter(Boolean)
       : undefined;
 
-    const where = {
+    const where: Prisma.PostWhereInput = {
       status: PostStatus.published,
       ...(hashtagList?.length ? { hashtags: { hasSome: hashtagList } } : {}),
     };
@@ -38,9 +38,13 @@ export class PostService {
 
     return this.mapToPaginatedResponse(
       posts,
-      meta.totalCount ?? 0,
-      meta.pageCount ?? 0,
+      meta.totalCount,
+      meta.pageCount,
+      meta.isFirstPage,
+      meta.isLastPage,
       meta.currentPage,
+      meta.nextPage,
+      meta.previousPage,
     );
   }
 
@@ -62,9 +66,13 @@ export class PostService {
 
     return this.mapToPaginatedResponse(
       posts,
-      meta.totalCount ?? 0,
-      meta.pageCount ?? 0,
+      meta.totalCount,
+      meta.pageCount,
+      meta.isFirstPage,
+      meta.isLastPage,
       meta.currentPage,
+      meta.nextPage,
+      meta.previousPage,
     );
   }
 
@@ -73,7 +81,7 @@ export class PostService {
       data: {
         title: dto.title,
         body: dto.body,
-        hashtags: dto.hashtags ?? [],
+        hashtags: dto.hashtags ?? [], // fare controllo con filter booelan per scartare hashtag vuoti
         authorId: userId,
       },
     });
@@ -108,15 +116,21 @@ export class PostService {
     items: T[],
     totalCount: number,
     totalPages: number,
+    isFirstPage: boolean,
+    isLastPage: boolean,
     currentPage: number,
+    nextPage: number | null,
+    prevPage: number | null,
   ): PaginatedResponse<T> {
     return {
       result: items,
       totalCount,
       totalPages,
+      isFirstPage,
+      isLastPage,
       currentPage,
-      hasNextPage: currentPage < totalPages,
-      hasPrevPage: currentPage > 1,
+      nextPage,
+      prevPage,
     };
   }
 }

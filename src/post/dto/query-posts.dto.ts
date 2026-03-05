@@ -8,15 +8,15 @@ export class QueryPostsDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  page?: number = 1;
+  page?: number;
 
-  @ApiPropertyOptional({ default: 10, minimum: 1, maximum: 100 })
+  @ApiPropertyOptional({ default: 10, minimum: 1, maximum: 40 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(100)
-  limit?: number = 10;
+  @Max(40)
+  limit?: number;
 
   @ApiPropertyOptional({
     description: 'Filtra per hashtag (singolo o comma-separated)',

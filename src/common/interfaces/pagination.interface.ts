@@ -6,10 +6,14 @@ export interface PaginatedResponse<T> {
   totalCount: number;
   /** Numero totale di pagine */
   totalPages: number;
+  /** Indica se è la prima pagina */
+  isFirstPage: boolean;
+  /** Indica se è l'ultima pagina */
+  isLastPage: boolean;
   /** Pagina corrente */
   currentPage: number;
-  /** Indica se esiste una pagina successiva */
-  hasNextPage: boolean;
-  /** Indica se esiste una pagina precedente */
-  hasPrevPage: boolean;
+  /** Pagine successive */
+  nextPage: number | null;
+  /** Pagine precedenti */
+  prevPage: number | null;
 }
