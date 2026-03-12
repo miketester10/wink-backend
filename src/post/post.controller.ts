@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -88,7 +89,7 @@ export class PostController {
     return this.postsService.create(dto, user.sub);
   }
 
-  @Post(':id/publish')
+  @Patch(':id/publish')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Pubblica un post (CMS) - protetto JWT' })
